@@ -26,14 +26,16 @@ func main() {
 	// needCleanJob := true
 	ex1 := "02000007"   // give by pool
 	ex2 := "d5104dc7"   // random value
-	nonce := "01000000" // nonce 1
-	powType := "06"     // 06 qitmeer_keccak256
+	nonce := "00000001" // nonce 1
+	nonce = ReverseByWidth(nonce, 1)
+	powType := "06" // 06 qitmeer_keccak256
 
 	coinbaseHash := Blake2bd(cb1 + Blake2bd(cb2+ex1+ex2+cb3) + cb4)
 	merkleHash := MakeMerkleRoot(coinbaseHash, merkleBranches)
 	prevHash := prevHashReversed
 	header := version + prevHash + merkleHash + zeroHash + nbits + nTime + nonce + powType
-	fmt.Println(header) //output 0c0000003ebbe1de1524c5d8450759652bfa0b1502f7b4b878b320dfcb56a3325b6307a354b77ab9a3929854146abe12ba50c7a21022a245de2e8446a3bec5d6228e14de0000000000000000000000000000000000000000000000000000000000000000ffff1f1c828ac25e0100000006
+	fmt.Println(header)
+	//output 0c0000003ebbe1de1524c5d8450759652bfa0b1502f7b4b878b320dfcb56a3325b6307a354b77ab9a3929854146abe12ba50c7a21022a245de2e8446a3bec5d6228e14de0000000000000000000000000000000000000000000000000000000000000000ffff1f1c828ac25e0100000006
 	b, _ := hex.DecodeString(header)
 	keccak := sha3.NewQitmeerKeccak256()
 	keccak.Write(b)
@@ -46,6 +48,9 @@ func main() {
 		return
 	}
 	fmt.Println("check failed")
+	// submit data
+	//[submit]{PoolUser, jobID, ExtraNonce2, timestampStr,nonceStr}
+	// params="[work01 1 d5104dc7 5ec28a82 00000001 ]"
 }
 
 //reverse LittleEndian bytes
